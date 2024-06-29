@@ -63,7 +63,7 @@ def place_points(init_grid):
     #grid[x-1,y-1] = 3
     return full_grid
 
-def full_grid(m,n,prob):
+def full_grid(m,n,prob =5):
     init_grid = create_initial_grid(m,n,prob) #matriz de 0 y 1
     full_grid = place_points(init_grid)     #matriz con modificaciones
     return full_grid
@@ -208,46 +208,80 @@ def print_grid(grid):
             elif grid[i][j] == 3:
                 out_str += "G "
 
+            elif grid[i][j] == 4:
+                out_str += "@ "
+
 
 
         out_str += "\n\r"
     print(out_str)
 
     
-def update_grid(path):
+def update_grid(grid,path):
     pos = start
 
-    print(f"camino:{path} de longitud {len(path)}\n")
+
+    #print(f"camino:{path} de longitud {len(path)}\n")
     
 
     for i in range(len(path)):
 
-        
+        clear_console()
+        print(f"iteración {i+1} de {len(path)}")
+
+        #print(f"Start point : {start}")
+        #print(f"End point : {goal}\n")
+
+        print_grid(grid)
 
         step_i = path[pos]
-        print(step_i)
+        grid[step_i[0]][step_i[1]] = 4
+        #print(step_i)
         pos = step_i
+        i+=1
+        time.sleep(1 / 5.0)
+
+def get_value(prompt,low,high):
+    while True:
+        try:
+            value = int(input(prompt))
+        except ValueError:
+            print("El valor solicitado no es valido")
+            continue
+        if value < low or value > high:
+            print("El valor no se encuentra en los limites (valor <= {0} o valor >= {1}).".format(low, high))
+        else:
+            break
+    return value
+
 
     
 
-def run(m,n,prob=5):
+def run_game():
     clear_console()
-    grid = full_grid(m,n,prob)
-    print(f"Start point : {start}")
-    print(f"End point : {goal}\n")
-    
-    print_grid(grid)
+    # Start the Game of Life
+
+    clear_console()
+    m = get_value("ingrese el tamaño m de la matriz (10-60): ", 10,60)
+    n = get_value("ingrese el tamaño n de la matriz (10-128): ", 10, 128)
+    grid = full_grid(m,n)
+    #print(f"Start point : {start}")
+    #print(f"End point : {goal}\n")
 
     aPath,fwdPath = aStar(grid)
 
-    update_grid(fwdPath)
+    update_grid(grid,fwdPath)
+    
+    return input("<Enter> to exit or r to run again: ")
 
-    #print(aPath)
-    # print(fwdPath)
-
-    #update_neighbors(start,grid)
 
 
 
 if __name__ == '__main__':
-    run(4,4)
+    # run_game()
+    # Start the Game
+    run = "r"
+    while run == "r":
+        out = run_game()
+        run = out
+
